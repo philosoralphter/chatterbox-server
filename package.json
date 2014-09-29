@@ -4,6 +4,7 @@
   "main": "server/main.js",
   "author": "Hack Reactor",
   "license": "Copyright 2013, Hack Reactor. All rights reserved.",
+  "description": "Learning to do a server!!!",
   "scripts": {
     "test": "mocha server/spec"
   },
