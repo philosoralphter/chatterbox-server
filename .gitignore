@@ -1,3 +1,6 @@
+### Chat Client files ###
+/client/*
+
 ### OSX ###
 .DS_Store
 .AppleDouble
