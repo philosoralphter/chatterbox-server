@@ -4,6 +4,7 @@
  * You'll have to figure out a way to export this function from
  * this file and include it in basic-server.js so that it actually works.
  * *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html. */
+var messageStorage = [];
 
 module.exports.handleRequest = function(request, response) {
   /* the 'request' argument comes from nodes http module. It includes info about the
@@ -14,7 +15,49 @@ module.exports.handleRequest = function(request, response) {
 
   console.log("Serving request type " + request.method + " for url " + request.url);
 
-  var statusCode = 200;
+  var statusCode;
+  var responseBody;
+
+
+  //***
+  //Request method determination
+  //***
+
+  var messagesRequestResponder = function(){  
+
+    //GET REQUESTS
+    if (request.method === 'GET'){
+      statusCode = 200; //OK
+      responseBody = messageStorage;
+
+    //POST REQUESTS
+    }else if (request.method === 'POST'){
+      //retrieve data and put in storage
+      request.on('data', function(data){
+        messageStorage.push(JSON.parse(data));
+      
+      });
+      statusCode = 201; //created
+
+    }else{
+      statusCode = 501; //not Implemented
+    }
+  };
+
+  //***
+  //Endpoint determination
+  //***
+  //var protoRouter = function(request, response){
+  //
+  //};
+  if (request.url === '/classes/messages'){
+    messagesRequestResponder();
+  }else if(request.url === '/classes/room1'){
+    messagesRequestResponder();
+  }else{
+    statusCode = 404;
+    responseBody = null;
+  }
 
   /* Without this line, this server wouldn't work. See the note
    * below about CORS. */
@@ -29,7 +72,9 @@ module.exports.handleRequest = function(request, response) {
    * anything back to the client until you do. The string you pass to
    * response.end() will be the body of the response - i.e. what shows
    * up in the browser.*/
-  response.end(JSON.stringify({'data':'Hello World'}));
+  response.end(JSON.stringify({
+    'results':responseBody
+  }));
 };
 
 /* These headers will allow Cross-Origin Resource Sharing (CORS).
